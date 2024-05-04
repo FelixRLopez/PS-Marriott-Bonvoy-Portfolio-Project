@@ -1,104 +1,68 @@
-const PLACES = [
-  {
-    name: "Algarve, Portugal",
-    long: -7.93044,
-    lat: 37.019356,
-    img: "assets/images/popular-destinations/algarve.jpg",
-    category: "beach",
-  },
-  {
-    name: "Atlanta, Georgia",
-    long: -84.38633,
-    lat: 33.753746,
-    img: "assets/images/popular-destinations/atlanta.jpg",
-    category: "city",
-  },
-  {
-    name: "Bali, Indonesia",
-    long: 115.188919,
-    lat: -8.409518,
-    img: "assets/images/popular-destinations/bali.jpg",
-    category: "beach",
-  },
-  {
-    name: "Bass Lake, California",
-    long: -119.5664,
-    lat: 37.3247,
-    img: "assets/images/popular-destinations/bass-lake.jpg",
-    category: "mountains",
-  },
-  {
-    name: "Big Sky, Montana",
-    long: -111.25312,
-    lat: 45.26599,
-    img: "assets/images/popular-destinations/big-sky.jpg",
-    category: "mountains",
-  },
-  {
-    name: "Delray Beach, Florida",
-    long: -80.105545,
-    lat: 26.459763,
-    img: "assets/images/popular-destinations/delray-beach.jpg",
-    category: "beach",
-  },
-  {
-    name: "Marco Island, Florida",
-    long: -81.714722,
-    lat: 25.940556,
-    img: "assets/images/popular-destinations/marco-island.jpg",
-    category: "beach",
-  },
-  {
-    name: "Nashville, Tennessee",
-    long: -86.76796,
-    lat: 36.174465,
-    img: "assets/images/popular-destinations/nashville.jpg",
-    category: "city",
-  },
-];
+// Task 1
+// Filter PLACES by type. If the type property of an object in PLACES matches the typePreference parameter.
+function filterPlacesByType(typePreference) {
+  // Step 1: Create a new filteredPlaces array and store it in a variable
+  let filteredPlaces = [];
 
-mapboxgl.accessToken = "KEY";
-const map = new mapboxgl.Map({
-  container: "map",
-  style: "mapbox://styles/mapbox/streets-v11",
-  center: [-7.93044, 37.019356],
-  zoom: 11.15,
-});
-
-PLACES.forEach((place) => {
-  // add a dropdown item to the nav menu with centerOnMap function
-  const megaMenuCol1 = document.getElementById("mega-menu-col-1");
-  const megaMenuCol2 = document.getElementById("mega-menu-col-2");
-  // nav button populating place name and scroll to map
-  let menuItemContent = `
-  <li onclick="centerOnMap('${place.name}')">
-    <a class="dropdown-item" href="#map">
-      ${place.name}
-    </a>
-  </li>
-  `;
-  if (megaMenuCol1.childElementCount < 4) {
-    megaMenuCol1.insertAdjacentHTML("beforeend", menuItemContent);
-  } else {
-    megaMenuCol2.insertAdjacentHTML("beforeend", menuItemContent);
+  // Step 2: Loop through PLACES
+  // Step 3: If a place object's type property matches the typePreference parameter, add it to filteredPlaces
+  for (let place of PLACES) {
+    if (place.type === typePreference) {
+      filteredPlaces.push(place);
+    }
   }
 
-  // set a marker with a popup on the map
-  var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-    `<p class="text-center">${place.name}</p> <img src="${place.img}" alt="" style="width: 200px; height: auto; border-radius: 4px;">`
-  );
-  new mapboxgl.Marker({ color: "black" })
-    .setLngLat([place.long, place.lat])
-    .setPopup(popup)
-    .addTo(map);
-});
+  // Step 4: After the loop, return filteredPlaces
+  return filteredPlaces;
+}
 
-function centerOnMap(placeName) {
-  // find place object by name in PLACES array
-  let placeObj = PLACES.find((place) => place.name === placeName);
+// Task 2
+function createCard(place) {
+  // Step 1: Create a new div element and store it in a variable
+  const div = document.createElement("div");
 
-  // fly map to the marker clicked on
-  map.flyTo({
-    center: [placeObj.long, placeObj.lat],
-  });
+  // Step 2: Add the col class to the new div element
+  div.className = "col";
+
+  // Step 3: Set the innerHTML of the div with a template string. It should resemble the structure shown in the readme. Interpolate the values for place.name, place.img, and place.location where needed. More info - https://wesbos.com/template-strings-html
+  div.innerHTML = `
+    <div class="card h-100" onclick="centerPlaceOnMap('${place.name}')">
+      <img src="${place.img}" class="card-img-top h-100" alt="Image of ${place.name}"/>
+      <div class="card-body">
+        <h5 class="card-title">${place.name}</h5>
+        <p class="card-text">${place.location}</p>
+      </div>
+    </div>
+  `
+  
+  // Step 4: Return the element
+  return div;
+}
+
+// Task 3
+function populateRecommendationCards(filteredPlaces) {
+  // Step 1: Store the DOM element with the id of "recommendations" in a variable
+  const recommendations = document.getElementById("recommendations");
+
+  // Step 2: Clear the "recommendations" innerHTML
+  recommendations.innerHTML = "";
+
+  // Step 3: Loop through the filteredPlaces array
+  // Step 4: Create a card for each place using the createCard function
+  // Step 5: Add/append each card to the recommendations DOM element
+  for (const filteredPlace of filteredPlaces) {
+    const card = createCard(filteredPlace);
+    recommendations.appendChild(card);
+  }
+}
+
+// Task 4
+function findPlaceByName(placeName) {
+  // Step 1: Loop through the PLACES array
+  // Step 2: If a place object's name property matches the placeName parameter, return that place object
+  for (const place of PLACES) {
+    if (place.name === placeName) {
+      return place;
+    }
+  }
 }
